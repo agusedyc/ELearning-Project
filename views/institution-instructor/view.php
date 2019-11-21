@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\InstitutionInstructor */
 
-$this->title = $model->id;
+$this->title = $model->institution->name . ' (' . $model->user->username . ')';
 $this->params['breadcrumbs'][] = ['label' => 'Institution Instructors', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $model->institution->name . ' (' . $model->user->username . ')', 'url' => ['view', 'id' => $model->id]];
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="institution-instructor-view">
@@ -29,11 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'institution_id',
-            'user_id',
-            'created_at',
-            'updated_at',
+            // 'id',
+            [
+                'label' => 'Institution',
+                'value' => $model->institution->name,
+            ],
+            [
+                'label' => 'User',
+                'value' => $model->user->username,
+            ]
+            // 'created_at',
+            // 'updated_at',
         ],
     ]) ?>
 

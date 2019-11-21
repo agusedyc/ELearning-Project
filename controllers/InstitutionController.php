@@ -66,8 +66,19 @@ class InstitutionController extends Controller
     {
         $model = new Institution();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->created_at = strtotime(date('Y-m-d H:i:s'));
+            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
+
+            if ($model->save()) {
+                
+                return $this->redirect(['view', 'id' => $model->id]);
+
+            } else {
+                return;
+            }
+
         }
 
         return $this->render('create', [
@@ -86,8 +97,19 @@ class InstitutionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->created_at = strtotime(date('Y-m-d H:i:s'));
+            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
+
+            if ($model->save()) {
+                
+                return $this->redirect(['view', 'id' => $model->id]);
+
+            } else {
+                return;
+            }
+
         }
 
         return $this->render('update', [

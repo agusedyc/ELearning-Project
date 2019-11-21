@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use app\models\InstitutionInstructor;
+use app\models\Institution;
+use app\models\User;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * InstitutionInstructorController implements the CRUD actions for InstitutionInstructor model.
@@ -66,8 +69,19 @@ class InstitutionInstructorController extends Controller
     {
         $model = new InstitutionInstructor();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->created_at = strtotime(date('Y-m-d H:i:s'));
+            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
+
+            if ($model->save()) {
+                
+                return $this->redirect(['view', 'id' => $model->id]);
+
+            } else {
+                return;
+            }
+
         }
 
         return $this->render('create', [
@@ -86,8 +100,19 @@ class InstitutionInstructorController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->created_at = strtotime(date('Y-m-d H:i:s'));
+            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
+
+            if ($model->save()) {
+                
+                return $this->redirect(['view', 'id' => $model->id]);
+
+            } else {
+                return;
+            }
+
         }
 
         return $this->render('update', [
