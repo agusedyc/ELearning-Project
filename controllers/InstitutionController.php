@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Institution;
+use app\models\InstitutionInstructor;
+use dektrium\user\models\User;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * InstitutionController implements the CRUD actions for Institution model.
@@ -52,8 +55,33 @@ class InstitutionController extends Controller
      */
     public function actionView($id)
     {
+        $dataProvider = new ActiveDataProvider([
+            'query' => InstitutionInstructor::find()->where(['institution_id'=>$id]),
+        ]);
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'dataProvider' => $dataProvider,
+
+        ]);
+    }
+
+    public function actionInstructor($id)
+    {
+        $list_user = ArrayHelper::map(User::find()->asArray()->all(), 'id', 'username');
+        $model = new InstitutionInstructor();
+
+        if ($model->load(Yii::$app->request->post()) /*&& $model->save()*/) {
+            $model->institution_id = $id;
+            // echo '<pre>';
+            // print_r(Yii::$app->request->post());
+            // echo '</pre>';
+            return ($model->save()) ? $this->redirect(['view', 'id' => $id]) : null;
+            // return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->render('_formInstructor', [
+            // 'model' => $this->findModel($id),
+            'model' => $model,
+            'list_user' => $list_user,
         ]);
     }
 
@@ -66,19 +94,8 @@ class InstitutionController extends Controller
     {
         $model = new Institution();
 
-        if ($model->load(Yii::$app->request->post())) {
-
-            $model->created_at = strtotime(date('Y-m-d H:i:s'));
-            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
-
-            if ($model->save()) {
-                
-                return $this->redirect(['view', 'id' => $model->id]);
-
-            } else {
-                return;
-            }
-
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -97,19 +114,8 @@ class InstitutionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
-
-            $model->created_at = strtotime(date('Y-m-d H:i:s'));
-            $model->updated_at = strtotime(date('Y-m-d H:i:s'));
-
-            if ($model->save()) {
-                
-                return $this->redirect(['view', 'id' => $model->id]);
-
-            } else {
-                return;
-            }
-
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [

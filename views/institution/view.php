@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -24,18 +25,35 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a('Add Instructor', ['instructor', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            // 'id',
+            'id',   
             'name',
-            'slug',
+            // 'slug',
             'description:ntext',
-            // 'created_at',
-            // 'updated_at',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
+    <br>
+    <h3>Instructors</h3>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            // 'id',
+            'institution.name',
+            'user.username',
+            'created_at:datetime',
+            // 'updated_at:datetime',
+
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
 
 </div>
