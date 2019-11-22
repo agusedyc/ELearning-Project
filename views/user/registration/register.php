@@ -1,4 +1,5 @@
 <?php
+use kartik\widgets\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -23,6 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'enableAjaxValidation' => true,
                     'enableClientValidation' => false,
                 ]); ?>
+
+                <?= $form->field($model, 'item_name')->widget(Select2::className(), [
+                    'data' => $list_role,
+                    'options' => ['placeholder' => 'Change'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]) ?>
 
                 <?= $form->field($model, 'email') ?>
 

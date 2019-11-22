@@ -42,6 +42,7 @@ $config = [
             ],
             'modelMap' => [
                 'User' => 'app\models\User',
+                'RegistrationForm' => 'app\models\RegistrationForm',
             ],
             'admins' => ['admin'],
             'enableConfirmation' => 'false',

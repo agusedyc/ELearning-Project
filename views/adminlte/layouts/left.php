@@ -1,7 +1,10 @@
 <?php 
 use app\models\User;
 // use dektrium\user\models\User;
-
+// $model = User::find()->orderBy(['id'=>SORT_DESC])->one();
+// echo '<pre>';
+// print_r($model);
+// echo '</pre>';
  ?>
 <aside class="main-sidebar">
 
@@ -31,7 +34,7 @@ use app\models\User;
             </form>
             <!-- /.search form -->
         <?php endif ?>
-    
+        
         <?php 
         use hscstudio\mimin\components\Mimin;
         $menuItems = [
