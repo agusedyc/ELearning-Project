@@ -125,6 +125,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '<controller:course>/<action:(view-lecture|create-question)>/<id:\d+>/quiz/<quizId:\d+>' => '<controller>/<action>',
+                '<controller:course>/<action:(view|view-lecture|create-quiz|create-lecture)>/<id:\d+>' => '<controller>/<action>',
             ],
         ],
         
