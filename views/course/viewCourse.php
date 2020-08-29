@@ -21,9 +21,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'about:ntext',
-            'institution.name',
-            'subject.name',
-            'level.name',
+            [
+                'label' => 'Institution',
+                'value' => $model->institution->name,
+            ],
+            [
+                'label' => 'Subject',
+                'value' => $model->subject->name,
+            ],
+            [
+                'label' => 'Level',
+                'value' => $model->level->name,
+            ]
             // 'instructor_id',
             // 'created_at:datetime',
             // 'updated_at:datetime',

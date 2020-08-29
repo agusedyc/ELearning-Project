@@ -59,9 +59,10 @@ class QuizQuestion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'key', 'category_id'], 'integer'],
-            [['title','slug', 'answer', 'answer2', 'answer3', 'answer4', 'answer5', 'answer6'], 'string', 'max' => 255],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
+            //[['id', 'key', 'category_id'], 'integer'],
+            [['title','answer', 'answer2', 'answer3', 'answer4', 'answer5', 'answer6'], 'required'],
+            [['title','answer', 'answer2', 'answer3', 'answer4', 'answer5', 'answer6'], 'string', 'max' => 255]
+           // [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizCategory::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
 

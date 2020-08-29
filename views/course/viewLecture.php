@@ -9,7 +9,8 @@ use yii\widgets\DetailView;
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Courses'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $courseName, 'url' => ['course/view?id=' . $model->course_id]];
+$this->params['breadcrumbs'][] = ['label' => $this->title . ' (' . $modelQuiz->name . ')'];
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="course-view">
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_at:datetime',
         ],
     ]) ?>
-    <?= Html::a('Add Question', ['create-question', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?= Html::a('Add Question', ['create-question', 'id' => $model->id, 'quizId' => $modelQuiz->id], ['class' => 'btn btn-primary']) ?>
     <br>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

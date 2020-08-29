@@ -33,9 +33,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'about:ntext',
-            'institution.name',
-            'subject.name',
-            'level.name',
+            [
+                'label' => 'Institution',
+                'value' => $model->institution->name,
+            ],
+            [
+                'label' => 'Subject',
+                'value' => $model->subject->name,
+            ],
+            [
+                'label' => 'Level',
+                'value' => $model->level->name,
+            ],
             // 'instructor_id',
             'created_at:datetime',
             'updated_at:datetime',
@@ -70,7 +79,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 // 'attribute' => 'qio',
                 'format' => 'raw',
                 'value' => function($model){
-                    return Html::a((isset($model->quiz)) ? $model->quiz->name : null,['course/view-lecture','id'=>$model->id]);
+                    $quizMany = $model->quizmany;
+                    if(count($quizMany) != 0){
+                        $result = array_map(function($quiz)use($model){
+                            return Html::a($quiz->name,['course/view-lecture','id'=>$model->id, 'quizId' => $quiz->id]);
+                        }, $quizMany);
+                        return implode(', ', $result);
+                    }
+                    else{
+                        return '';
+                    }
                 }
             ],
             // 'created_at:datetime',

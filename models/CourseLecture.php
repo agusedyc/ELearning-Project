@@ -107,4 +107,12 @@ class CourseLecture extends \yii\db\ActiveRecord
     {
         return $this->hasOne(QuizCategory::className(), ['lecture_id' => 'id']);
     }
+
+     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizmany()
+    {
+        return $this->hasMany(QuizCategory::className(), ['lecture_id' => 'id']);
+    }
 }
