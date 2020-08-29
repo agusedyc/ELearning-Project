@@ -73,6 +73,16 @@ use app\models\User;
                         // ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
                     ],
                 ],
+                ['label' => 'Profiling','icon' => 'dashboard','url' => '#','items' => [
+                        ['label' => 'Profiling Technique', 'icon' => 'pencil', 'url' => ['/profiling-technique/index'],],
+                        ['label' => 'Profiling Category', 'icon' => 'pencil', 'url' => ['/profiling-category/index'],],
+                        ['label' => 'Question', 'icon' => 'list-ul', 'url' => ['/profiling/index'],],
+                        ['label' => 'User Profiling', 'icon' => 'user', 'url' => ['/profiling-user/index'],],
+                        ['label' => 'Profiling Test', 'icon' => 'pencil', 'url' => ['/profiling-test/index'],],
+                        // ['label' => 'Institution Instructor', 'icon' => 'list-ul', 'url' => ['/institution-instructor/index'],],
+                        // ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                    ],
+                ],
                 ['label' => 'Some tools','icon' => 'share','url' => '#','items' => [
                         ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
                         ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],

@@ -3,22 +3,24 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Course;
-use app\models\CourseLecture;
-use app\models\CourseSearch;
-use app\models\EnroledCourse;
-use app\models\Institution;
-use app\models\InstitutionInstructor;
 use app\models\Level;
+use yii\web\Response;
+use app\models\Course;
+use app\models\Subject;
+use yii\web\Controller;
+use app\models\Institution;
+use yii\filters\VerbFilter;
+use yii\widgets\ActiveForm;
+use app\models\CourseSearch;
 use app\models\QuizCategory;
 use app\models\QuizQuestion;
-use app\models\Subject;
+use yii\helpers\ArrayHelper;
+use app\models\CourseLecture;
+use app\models\EnroledCourse;
 use dektrium\user\models\User;
 use yii\data\ActiveDataProvider;
-use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\InstitutionInstructor;
 
 /**
  * CourseController implements the CRUD actions for Course model.
@@ -35,6 +37,8 @@ class CourseController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'create-question' => ['POST', 'GET'],
+                    'create-quiz' => ['POST', 'GET']
                 ],
             ],
         ];
@@ -121,10 +125,17 @@ class CourseController extends Controller
     
     public function actionViewMaterial($id)
     {
+        $courseLecture = CourseLecture::find()->where(['id' => $id])->one();
+        if($courseLecture == null){
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        $dataProvider = new ActiveDataProvider([ 
+            'query' => QuizCategory::find()->where(['lecture_id'=>$id]), 
+         ]);    
 
         return $this->render('viewMaterial', [
-            'model' => CourseLecture::findOne($id),
-            // 'dataProvider' => $dataProvider,
+            'model' => $courseLecture,
+            'dataProvider' => $dataProvider
         ]);
     }
 
@@ -263,16 +274,26 @@ class CourseController extends Controller
     //     ]);
     // }
 
-    public function actionViewLecture($id)
+    public function actionViewLecture($id, $quizId = null)
     {
         // $list_user = ArrayHelper::map(User::find()->asArray()->all(), 'id', 'username'); 
-
+        $courseLecture =  CourseLecture::findOne($id);
+        $conditions = ['lecture_id'=> $id];
+        if($quizId != null){
+            $conditions['id'] = $quizId;
+        }
+        $quizCategory = QuizCategory::find()->where($conditions)->one();
+        if($courseLecture == null || $quizCategory == null){
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        $courseName = $courseLecture->course->title ?? '-';
         $dataProvider = new ActiveDataProvider([ 
-           'query' => QuizQuestion::find()->where(['category_id'=>QuizCategory::find()->where(['lecture_id'=>$id])->one()->id]), 
+           'query' => QuizQuestion::find()->where(['category_id'=> $quizCategory->id]), 
         ]); 
         return $this->render('viewLecture', [
-            'model' => CourseLecture::findOne($id),
-            'modelQuiz' => QuizCategory::find()->where(['lecture_id'=>$id])->one(),
+            'courseName' => $courseName,
+            'model' => $courseLecture,
+            'modelQuiz' => $quizCategory,
             'dataProvider' => $dataProvider,
         ]);
 
@@ -282,36 +303,48 @@ class CourseController extends Controller
     {
 
         $model = new QuizCategory();
-
-        if ($model->load(Yii::$app->request->post()) /*&& $model->save()*/) { 
-           $model->lecture_id = $id; 
-           // echo '<pre>'; 
-           // print_r(Yii::$app->request->post()); 
-           // echo '</pre>'; 
-           return ($model->save()) ?  $this->redirect(['view-lecture', 'id' => $id]) : null; 
-        } 
+        $courseLecture = (new \yii\db\Query())
+        ->innerJoin('course', 'course.id = course_lecture.course_id')
+        ->from('course_lecture')
+        ->where(['course_lecture.id' => $id])
+        ->select(['course_lecture.id', 'course_lecture.title', 'course_lecture.course_id', 'course.title as course_title'])
+        ->one();
+        if($courseLecture == null){
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->lecture_id = $id; 
+            return ($model->save()) ?  $this->redirect(['view-lecture', 'id' => $id, 'quizId' => $model->id]) : null; 
+            } 
+        }
         return $this->render('_formQuiz', [ 
-           // 'model' => $this->findModel($id), 
+           'lecture' => $courseLecture,
            'model' => $model, 
-           // 'list_user' => $list_user, 
         ]);
     }
 
-    public function actionCreateQuestion($id)
+    public function actionCreateQuestion($id, $quizId)
     {
-         $model = new QuizQuestion();
-
-        if ($model->load(Yii::$app->request->post()) /*&& $model->save()*/) { 
-           $model->category_id = QuizCategory::find()->where(['lecture_id'=>$id])->one()->id; 
-           // echo '<pre>'; 
-           // print_r(Yii::$app->request->post()); 
-           // echo '</pre>'; 
-           return ($model->save()) ? $this->redirect(['view-lecture', 'id' => $id]) : null; 
-        } 
+        $model = new QuizQuestion();
+        $quizCategory =(new \yii\db\Query())->where(['quiz_category.lecture_id'=>$id, 'quiz_category.id' => $quizId])
+        ->innerJoin('course_lecture', 'course_lecture.id = quiz_category.lecture_id')
+        ->innerJoin('course', 'course.id = course_lecture.course_id')
+        ->from('quiz_category')
+        ->select(['quiz_category.*', 'course_lecture.course_id' , 'course.title as course_title', 'course_lecture.title'])->one();
+        if($quizCategory == null){
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                   $model->id = $id;
+                   $model->category_id = $quizCategory['id']; 
+                   return ($model->save()) ? $this->redirect(['view-lecture', 'id' => $id, 'quizId' => $quizId]) : null; 
+            }
+        }
         return $this->render('_formQuestion', [ 
-           // 'model' => $this->findModel($id), 
            'model' => $model, 
-           // 'list_user' => $list_user, 
+           'modelQuiz' => $quizCategory
         ]);
     }
 

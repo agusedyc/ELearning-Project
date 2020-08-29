@@ -8,6 +8,10 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\InstitutionInstructor */
 /* @var $form yii\widgets\ActiveForm */
 $this->title = 'Add Question';
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Courses'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $modelQuiz['course_title'], 'url' => ['course/view?id=' . $modelQuiz['course_id']]];
+$this->params['breadcrumbs'][] = ['label' => $modelQuiz['title'] . ' (' . $modelQuiz['name'] . ')', 'url' => ['course/view-lecture/' . $modelQuiz['lecture_id'] . '/quiz/' . $modelQuiz['id']]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 

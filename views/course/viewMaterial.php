@@ -18,9 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="course-view">
     <p>
         <?= Html::a('Back', ['index'], ['class' => 'btn btn-success']) ?>
-        <?php if (!empty($model->quiz)): ?>
-            <?= Html::a('Take Quiz Now', ['quiz/site/start','category' => $model->quiz->id], ['class' => 'btn btn-success']) ?>    
-        <?php endif ?>
     </p>
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -39,5 +36,22 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_at:datetime',
         ],
     ]) ?>
-
+     <h3>Quiz</h3>
+     <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'name',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{take-quiz}',
+                'buttons' => [
+                    'take-quiz' => function($url, $quiz) {
+                        return Html::a('Take Quiz Now', ['quiz/site/start','category' => $quiz->id], ['class' => 'btn btn-sm btn-success']);
+                    },
+                ],
+            ],
+        ]
+        ]);
+    ?>
 </div>

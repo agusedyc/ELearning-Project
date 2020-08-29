@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\ListView;
 use app\modules\quiz\controllers\SiteController;
  
-$this->title = 'Test end';
+$this->title = 'Quiz Finished';
 
 $scriptquiz ='
     $(".pagination li a").click(function(){
@@ -99,7 +99,7 @@ $stylequiz = '
         if(isset($diplomaForm) && !isset(Yii::$app->session['diplomaGot'])):
     ?>
         <div style="font-size:20px;text-align:center;padding-top:35px;" class="form">
-            Congratulations, you can download your diploma!<br/><br/>
+            Congratulations, you have download your diploma!<br/><br/>
             <?php $form = ActiveForm::begin(array(
                 'id'=>'diploma-form',
                 'enableClientValidation'=>false,

@@ -23,7 +23,8 @@ class QuizCategory extends BaseQuizCategory
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return [
-			[['name'],'string'],
+            [['name'],'string'],
+            [['name'],'required'],
 			[['created_by','updated_by','lecture_id'],'integer'],
 		];
 	}
