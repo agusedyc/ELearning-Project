@@ -44,7 +44,7 @@ class ProfilingTestController extends Controller
         return $this->render('status', [
             'is_tested' => $is_tested, 
             'test_result' => $test_result,
-            'summary' => $summary
+            'summary' => isset($summary) ? $summary: []
         ]);
     }
 
